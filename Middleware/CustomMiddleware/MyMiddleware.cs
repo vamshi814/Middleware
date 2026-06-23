@@ -11,4 +11,13 @@
 
         }
     }
+
+    //Extension method to add MyMiddleware to the middleware pipeline
+    public static class CustomMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseMyMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<MyMiddleware>();
+        }
+    }
 }

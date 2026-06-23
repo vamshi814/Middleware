@@ -37,7 +37,9 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 
 //Middleware 3 
 //Calling Custom Middleware
-app.UseMiddleware<MyMiddleware>();
+//app.UseMiddleware<MyMiddleware>(); instead we can use extension method
+app.UseMyMiddleware();
+
 
 //Middleware 4
 app.Run(async (HttpContext context) =>
