@@ -14,15 +14,26 @@ var app = builder.Build();
 //and will be able to handle incoming HTTP requests and send responses back to the client
 
 //httpcontext is an object that represents the current HTTP request and response
-app.Run(async (HttpContext context) =>
+//Middleware 1
+app.Use(async (HttpContext context, RequestDelegate next) =>
 {
-    await context.Response.WriteAsync("Hosted on Server \n" +
-        "httpcontext is an object that represents the current HTTP request and response");
+    await context.Response.WriteAsync("1st middleware \n Hosted on Server " +
+        "httpcontext is an object that represents the current HTTP request and response\n");
+    await next(context); // updated context object is passed to the next middleware in the pipeline
 });
 
+//Middleware 2
+app.Use(async (HttpContext context, RequestDelegate next) =>
+{
+    await context.Response.WriteAsync("\n2nd middleware started\n");
+    await next(context); // updated context object is passed to the next middleware in the pipeline
+    await context.Response.WriteAsync("\n2nd middleware ended\n");
+});
+
+//Middleware 3
 app.Run(async (HttpContext context) =>
 {
-    await context.Response.WriteAsync("Next Middleware");
+    await context.Response.WriteAsync("\n3rd Middleware\n");
 });
 
 app.Run();//start the application and listen for incoming requests
