@@ -1,5 +1,10 @@
+//importing Custom Middle ware
+using Middleware.CustomMiddleware;
+
 //creating an instance of the web application builder
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<MyMiddleware>();
 
 //create an instance of the web application(ASP.NET Core application)
 var app = builder.Build();
@@ -30,10 +35,14 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
     await context.Response.WriteAsync("\n2nd middleware ended\n");
 });
 
-//Middleware 3
+//Middleware 3 
+//Calling Custom Middleware
+app.UseMiddleware<MyMiddleware>();
+
+//Middleware 4
 app.Run(async (HttpContext context) =>
 {
-    await context.Response.WriteAsync("\n3rd Middleware\n");
+    await context.Response.WriteAsync("\n4th middleware\n");
 });
 
 app.Run();//start the application and listen for incoming requests
