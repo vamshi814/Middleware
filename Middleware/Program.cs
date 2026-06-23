@@ -38,13 +38,27 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 //Middleware 3 
 //Calling Custom Middleware
 //app.UseMiddleware<MyMiddleware>(); instead we can use extension method
-app.UseMyMiddleware();
-
+//app.UseMyMiddleware();
+app.UseAnotherMiddleware();
 
 //Middleware 4
+app.UseWhen(context => context.Request.Query.ContainsKey("IsAuthorized")
+                        && context.Request.Query["IsAuthorized"] == "true",
+    appBuilder =>
+    {
+        appBuilder.Use(async (HttpContext context, RequestDelegate next) =>
+        {
+            await context.Response.WriteAsync("\n4th middleware started\n");
+            await next(context); // updated context object is passed to the next middleware in the pipeline
+            await context.Response.WriteAsync("\n4th middleware ended\n");
+        });
+    });
+
+
+//Middleware 5
 app.Run(async (HttpContext context) =>
 {
-    await context.Response.WriteAsync("\n4th middleware\n");
+    await context.Response.WriteAsync("\n5th middleware\n");
 });
 
 app.Run();//start the application and listen for incoming requests
